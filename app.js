@@ -1,28 +1,28 @@
 // ===== IMPORT PACKAGES ====== //
 const express = require('express')
+// Creating an Express application
+const app = express();
 const dotenv = require('dotenv');
+// Configuring dotenv and specifying the path for the environment variables file
+dotenv.config({ path: './config.env' })
 const morgan = require('morgan');
 const connectDB = require(`${__dirname}/db/connect`);
-
 // ===== EXTRA PACKAGES ====== //
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const cors = require('cors')
 const xss = require('xss')
-
+// ===== IMPORT ROUTES ====== //
+const authRoutes = require('./routes/authRoutes')
 // ===== IMPORT MIDDLEWARES ====== //
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 const authenticationMiddleware = require('./middleware/authentication')
 
-// ===== FUNCTIONALITY ====== //
+// ==== SECURITY AND DATA SANITIZATION ===== //
 
-// Creating an Express application
-const app = express();
-// Configuring dotenv and specifying the path for the environment variables file
-dotenv.config({ path: './config.env' })
-// Use morgan
-app.use(morgan('dev'))
+// Middleware for Set Security HTTP Headers
+app.use(helmet());
 
 // ===== SECURITY MIDDLEWARES ====== //
 const limiter = rateLimit({
@@ -33,22 +33,19 @@ const limiter = rateLimit({
     // store: ... , // Use an external store for consistency across multiple server instances.
 })
 
-app.use(limiter);
-app.use(helmet());
-app.use(cors);
-app.use(xss);
+// Middleware to Limit access to resources after 100 requests (Preventing DDos attack)
+app.use('/api', limiter);
 
 
-// ===== JSON AND STATIC MIDDLEWARES ====== //
+// ===== FUNCTIONALITY ====== //
+
+
+// Apply logging middleware using Morgan in 'dev' mode
+app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.static('./public'))
 
 // ===== ROUTES ====== //
-// app.use('/api/v1/jobs-api/auth', authRouter)
-// app.use('/api/v1/jobs-api/jobs', authenticationMiddleware, jobsRouter)
-app.use('/api/v1/express-ecommerce-api', (req, res) => {
-    console.log("Hello World");
-})
+app.use('/api/v1/express-ecommerce-api/auth', authRoutes)
 
 
 // ===== OTHER MIDDLEWARES ====== //

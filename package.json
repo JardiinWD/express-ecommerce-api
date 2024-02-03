@@ -34,9 +34,9 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.2",
     "morgan": "^1.10.0",
-    "validator": "^13.6.0",
-    "xss-clean": "^0.1.1",
-    "xss": "^1.0.14"
+    "validator": "^13.11.0",
+    "xss": "^1.0.14",
+    "xss-clean": "^0.1.1"
   },
   "devDependencies": {
     "@types/express-rate-limit": "^6.0.0",
