@@ -12,6 +12,7 @@ const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const cors = require('cors')
 const xss = require('xss')
+const cookieParser = require('cookie-parser')
 // ===== IMPORT ROUTES ====== //
 const authRoutes = require('./routes/authRoutes')
 // ===== IMPORT MIDDLEWARES ====== //
@@ -39,10 +40,11 @@ app.use('/api', limiter);
 
 // ===== FUNCTIONALITY ====== //
 
-
 // Apply logging middleware using Morgan in 'dev' mode
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(cookieParser());
+
 
 // ===== ROUTES ====== //
 app.use('/api/v1/express-ecommerce-api/auth', authRoutes)
