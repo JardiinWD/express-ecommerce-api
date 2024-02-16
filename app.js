@@ -15,6 +15,7 @@ const xss = require('xss')
 const cookieParser = require('cookie-parser')
 // ===== IMPORT ROUTES ====== //
 const authRoutes = require('./routes/authRoutes')
+const userRoutes = require('./routes/userRoutes')
 // ===== IMPORT MIDDLEWARES ====== //
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -42,12 +43,16 @@ app.use('/api', limiter);
 
 // Apply logging middleware using Morgan in 'dev' mode
 app.use(morgan('dev'));
+// Middleware to parse JSON bodies of incoming requests
 app.use(express.json());
-app.use(cookieParser());
+// Middleware to parse cookies attached to the request
+app.use(cookieParser(process.env.JWT_SECRET));
+
 
 
 // ===== ROUTES ====== //
 app.use('/api/v1/express-ecommerce-api/auth', authRoutes)
+app.use('/api/v1/express-ecommerce-api/users', userRoutes)
 
 
 // ===== OTHER MIDDLEWARES ====== //

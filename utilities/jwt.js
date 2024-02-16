@@ -2,6 +2,8 @@
 const JWToken = require('jsonwebtoken');
 // Importing the dotenv package for environment variable configuration
 const dotenv = require('dotenv');
+// Importing the Status Code Package
+const { StatusCodes } = require('http-status-codes');
 // Configuring dotenv and specifying the path for the environment variables file
 dotenv.config({ path: '../config.env' })
 
@@ -47,8 +49,11 @@ const attachCookiesToResponse = ({ res, user }) => {
     // Attach the token as a cookie to the response
     res.cookie('token', tokenToAttach, {
         httpOnly: true, // Make the cookie accessible only via HTTP(S)
-        expires: new Date(Date.now() + expiresDay) // Set the expiration date for the cookie
+        expires: new Date(Date.now() + expiresDay), // Set the expiration date for the cookie
+        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS in production
+        signed: true // Signs the cookie to prevent tampering
     })
+
 }
 
 
