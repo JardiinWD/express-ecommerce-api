@@ -13,15 +13,15 @@ const {
 const authenticationMiddleware = require('./../middleware/authentication')
 
 // Route for GET all users
-router.route('/').get(getAllUsers);
+router.route('/').get(authenticationMiddleware, getAllUsers);
 // Route to show current user
 router.route('/showMe').get(showCurrentUser)
 // Route to update user
-router.route('/updateUser').post(updateUser)
+router.route('/updateUser').patch(updateUser)
 // Route to update user password
-router.route('/updateUserPassword').post(updateUserPassword)
+router.route('/updateUserPassword').patch(updateUserPassword)
 // Route to get a single user by ID
-router.route('/:id').get(getSingleUser)
+router.route('/:id').get(authenticationMiddleware, getSingleUser)
 
 
 

@@ -1,13 +1,15 @@
 // Importing the catchAsync function
 const catchAsync = require('./../utilities/catchAsync');
 // Importing User Model
-// const User = require('./../models/User');
+const User = require('./../models/User');
 // Importing the Status Code Package
 const { StatusCodes } = require('http-status-codes');
 // Importing the BadRequest error handler
 const { UnauthenticatedError } = require('./../errors/index');
 // Importing the jwtoken for generating a unique token
 const JWToken = require('jsonwebtoken');
+// Take the functionality from utilities
+const { isTokenValid } = require('../utilities/index')
 
 
 /** Middleware for user authentication
@@ -16,24 +18,22 @@ const JWToken = require('jsonwebtoken');
  * @param {Function} next - Express next middleware function
  */
 const authenticationMiddleware = catchAsync(async (req, res, next) => {
-    // Extracting authorization header from the request
-    const authHeader = req.headers.authorization
-    // Checking if authorization header is missing or not in the correct format
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        throw new UnauthenticatedError('No token provided', StatusCodes.BAD_REQUEST);
-    }
-
-    // Extracting the token from the authorization header
-    const token = authHeader.split(' ')[1];
+    // Extract the token from signed cookies
+    const token = req.signedCookies.token
+    // Check if token exists
+    if (!token)
+        throw new UnauthenticatedError('Authentication Token not found!', StatusCodes.UNAUTHORIZED);
 
     try {
-        // Verifying and decoding the JWT token
-        const decoded = JWToken.verify(token, process.env.JWT_SECRET);
-        // Attach the user to the jobs route
+        // Verify the token and extract payload
+        const payload = isTokenValid({ token })
+        // Set user information in the request object
         req.user = {
-            userId: decoded.userId,
-            name: decoded.name
+            name: payload.name, // User's name
+            userId: payload._id, // User's ID
+            role: payload.role // User's role
         }
+
         // Passing control to the next middleware in the stack
         next();
     } catch (error) {
@@ -41,5 +41,6 @@ const authenticationMiddleware = catchAsync(async (req, res, next) => {
         throw new UnauthenticatedError('Not authorized to access this route', StatusCodes.UNAUTHORIZED);
     }
 })
+
 
 module.exports = authenticationMiddleware
