@@ -30,10 +30,9 @@ const authenticationMiddleware = catchAsync(async (req, res, next) => {
         // Set user information in the request object
         req.user = {
             name: payload.name, // User's name
-            userId: payload._id, // User's ID
+            userId: payload.userId, // User's ID
             role: payload.role // User's role
         }
-
         // Passing control to the next middleware in the stack
         next();
     } catch (error) {

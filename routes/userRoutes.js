@@ -19,7 +19,7 @@ router.route('/showMe').get(authenticationMiddleware, showCurrentUser)
 // Route to update user
 router.route('/updateUser').patch(updateUser)
 // Route to update user password
-router.route('/updateUserPassword').patch(updateUserPassword)
+router.route('/updateUserPassword').patch(authenticationMiddleware, updateUserPassword)
 // Route to get a single user by ID
 router.route('/:id').get(authenticationMiddleware, getSingleUser)
 

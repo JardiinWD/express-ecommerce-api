@@ -80,8 +80,40 @@ const updateUser = catchAsync(async (req, res) => {
  * @param {Object} res - Express response object. Used to send a response to the client.
  */
 const updateUserPassword = catchAsync(async (req, res) => {
-    // CONTROLLER TO UPDATE A USER'S PASSWORD
+    // INSERT COMMENT HERE
+    const { oldPassword, newPassword } = req.body
+    // Check if oldPassword or newPassword is missing
+    if (!oldPassword || !newPassword)
+        throw new BadRequestError('Please provide both values')
+
+    // Find the user by ID
+    const user = await User.findOne({
+        _id: req.user.userId
+    })
+
+
+    // INSERT COMMENT HERE
+    const isPasswordCorrect = await user.comparePassword(oldPassword)
+
+    // INSERT COMMENT HERE
+    if (!isPasswordCorrect)
+        throw new UnauthenticatedError('Invalid Credentials')
+
+    // So if everything is fine then user can update his/her password
+    user.password = newPassword
+    // Then we can perform a save action on user
+    await user.save()
+
+    res.status(StatusCodes.OK).json({
+        status: 'success',
+        message: "Success! Password updated"
+    })
+
 })
+
+
+
+
 
 module.exports = {
     getAllUsers,

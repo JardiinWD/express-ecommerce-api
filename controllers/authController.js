@@ -11,7 +11,7 @@ const dotenv = require('dotenv');
 // Configuring dotenv and specifying the path for the environment variables file
 dotenv.config({ path: '../config.env' })
 // Importing the createJWT function created on utilities folder
-const { attachCookiesToResponse } = require('../utilities/index')
+const { attachCookiesToResponse, createTokenUser } = require('../utilities/index')
 
 
 /** Controller function for user logout
@@ -52,14 +52,15 @@ const register = catchAsync(async (req, res) => {
     const role = isFirstAccount ? 'admin' : 'user'
 
     // If the previous condition was false then create the user
-    const user = await User.create(req.body)
+    const user = await User.create({
+        name,
+        email,
+        password,
+        role
+    })
 
     // Creating the user object for the token with necessary information
-    const tokenUser = {
-        name: user.name, // User's name
-        userId: user._id, // User's ID
-        role: user.role // User's role
-    }
+    const tokenUser = createTokenUser(user)
 
     // Adding cookies to the response containing the JWT token
     attachCookiesToResponse({ // Function to add cookies to the response
@@ -107,6 +108,8 @@ const login = catchAsync(async (req, res) => {
         userId: candidateUser._id, // User's ID
         role: candidateUser.role // User's role
     }
+
+    console.log("tokenUser login AuthController", tokenUser);
 
     // Adding cookies to the response containing the JWT token
     attachCookiesToResponse({ // Function to add cookies to the response
