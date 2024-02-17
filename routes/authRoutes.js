@@ -5,7 +5,7 @@ const router = express.Router();
 // Importing the login and register controllers
 const { login, logout, register } = require('./../controllers/authController')
 // Importing the Authenticazion Middleware for protecting Login
-const authenticationMiddleware = require('./../middleware/authentication')
+const { authenticationMiddleware } = require('./../middleware/authentication')
 
 // Route for user registration
 router.post('/register', register);

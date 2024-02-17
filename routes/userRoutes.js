@@ -10,12 +10,12 @@ const {
     updateUser
 } = require('./../controllers/userController')
 // Importing the Authenticazion Middleware for protecting Login
-const authenticationMiddleware = require('./../middleware/authentication')
+const { authenticationMiddleware, authorizePermissions } = require('./../middleware/authentication')
 
 // Route for GET all users
-router.route('/').get(authenticationMiddleware, getAllUsers);
+router.route('/').get(authenticationMiddleware, authorizePermissions('admin', 'owner'), getAllUsers);
 // Route to show current user
-router.route('/showMe').get(showCurrentUser)
+router.route('/showMe').get(authenticationMiddleware, showCurrentUser)
 // Route to update user
 router.route('/updateUser').patch(updateUser)
 // Route to update user password

@@ -5,7 +5,7 @@ const User = require('./../models/User');
 // Importing the Status Code Package
 const { StatusCodes } = require('http-status-codes');
 // Importing the BadRequest error handler
-const { UnauthenticatedError } = require('./../errors/index');
+const { UnauthenticatedError, UnauthorizedError } = require('./../errors/index');
 // Importing the jwtoken for generating a unique token
 const JWToken = require('jsonwebtoken');
 // Take the functionality from utilities
@@ -38,9 +38,31 @@ const authenticationMiddleware = catchAsync(async (req, res, next) => {
         next();
     } catch (error) {
         // Handling unauthorized access error
-        throw new UnauthenticatedError('Not authorized to access this route', StatusCodes.UNAUTHORIZED);
+        throw new UnauthenticatedError('Not authorized to access this route');
     }
 })
 
 
-module.exports = authenticationMiddleware
+
+/** Middleware for user authorization
+ * @param {Object} req - Express request object. Contains information about the client's request.
+ * @param {Object} res - Express response object. Used to send a response to the client.
+ * @param {Function} next - Express next middleware function
+ * @param {INSERT} roles - Express request object. Contains information about the client's request.
+ */
+const authorizePermissions = (...roles) => {
+    // INSERT COMMENT HERE
+    return (req, res, next) => {
+        // INSERT COMMENT HERE
+        if (!roles.includes(req.user.role))
+            throw new UnauthorizedError('Not authorized to access this route');
+        // Passing control to the next middleware in the stack
+        next();
+    }
+}
+
+
+module.exports = {
+    authenticationMiddleware,
+    authorizePermissions
+}

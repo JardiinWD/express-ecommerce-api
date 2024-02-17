@@ -60,7 +60,11 @@ const getSingleUser = catchAsync(async (req, res) => {
  * @param {Object} res - Express response object. Used to send a response to the client.
  */
 const showCurrentUser = catchAsync(async (req, res) => {
-    // CONTROLLER TO SHOW CURRENT USER
+    // INSERT COMMENT HERE
+    res.status(StatusCodes.OK).json({
+        status: 'success',
+        user: req.user
+    })
 })
 
 /** Controller function for updating a user

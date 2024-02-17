@@ -19,7 +19,7 @@ const userRoutes = require('./routes/userRoutes')
 // ===== IMPORT MIDDLEWARES ====== //
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
-const authenticationMiddleware = require('./middleware/authentication')
+const { authenticationMiddleware } = require('./middleware/authentication')
 
 // ==== SECURITY AND DATA SANITIZATION ===== //
 
