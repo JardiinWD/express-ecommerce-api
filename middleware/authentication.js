@@ -47,18 +47,19 @@ const authenticationMiddleware = catchAsync(async (req, res, next) => {
  * @param {Object} req - Express request object. Contains information about the client's request.
  * @param {Object} res - Express response object. Used to send a response to the client.
  * @param {Function} next - Express next middleware function
- * @param {INSERT} roles - Express request object. Contains information about the client's request.
+ * @param {Array} roles - Array of roles allowed to access the route
  */
 const authorizePermissions = (...roles) => {
-    // INSERT COMMENT HERE
+    // Return middleware function
     return (req, res, next) => {
-        // INSERT COMMENT HERE
+        // Check if user's role is included in the allowed roles
         if (!roles.includes(req.user.role))
             throw new UnauthorizedError('Not authorized to access this route');
         // Passing control to the next middleware in the stack
         next();
     }
 }
+
 
 
 module.exports = {

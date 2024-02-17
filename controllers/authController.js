@@ -105,11 +105,10 @@ const login = catchAsync(async (req, res) => {
     // Creating the user object for the token with necessary information
     const tokenUser = {
         name: candidateUser.name, // User's name
+        email: candidateUser.email, // User's email
         userId: candidateUser._id, // User's ID
         role: candidateUser.role // User's role
     }
-
-    console.log("tokenUser login AuthController", tokenUser);
 
     // Adding cookies to the response containing the JWT token
     attachCookiesToResponse({ // Function to add cookies to the response
@@ -118,7 +117,7 @@ const login = catchAsync(async (req, res) => {
     })
 
     // Sending the response with "created" status and user data for the token
-    res.status(StatusCodes.CREATED).json({
+    res.status(StatusCodes.OK).json({
         status: "success", // Request status
         data: tokenUser // User data for the token
     })

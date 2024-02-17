@@ -17,7 +17,7 @@ router.route('/').get(authenticationMiddleware, authorizePermissions('admin', 'o
 // Route to show current user
 router.route('/showMe').get(authenticationMiddleware, showCurrentUser)
 // Route to update user
-router.route('/updateUser').patch(updateUser)
+router.route('/updateUser').patch(authenticationMiddleware, updateUser)
 // Route to update user password
 router.route('/updateUserPassword').patch(authenticationMiddleware, updateUserPassword)
 // Route to get a single user by ID
