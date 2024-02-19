@@ -4,29 +4,28 @@ const express = require('express');
 const router = express.Router();
 // Importing the productController controllers
 const {
-    createProduct,
-    getAllProducts,
-    getSingleProduct,
-    updateProduct,
-    deleteProduct,
-} = require('./../controllers/productController')
+    createReview,
+    getAllReviews,
+    getSingleReview,
+    updateReview,
+    deleteReview
+} = require('./../controllers/reviewController')
+
 // Importing the Authenticazion Middleware for protecting Login
 const { authenticationMiddleware, authorizePermissions } = require('./../middleware/authentication')
 
 // Route for GET all products
 router
     .route('/')
-    .post([authenticationMiddleware, authorizePermissions('admin')], createProduct)
-    .get(getAllProducts)
+    .post(authenticationMiddleware, createReview)
+    .get(getAllReviews)
 
 // CRUD operations for single product    
 router
     .route('/:id')
-    .get(getSingleProduct)
-    .patch([authenticationMiddleware, authorizePermissions('admin')], updateProduct)
-    .delete([authenticationMiddleware, authorizePermissions('admin')], deleteProduct)
-
-
+    .get(getSingleReview)
+    .patch(authenticationMiddleware, updateReview)
+    .delete(authenticationMiddleware, deleteReview)
 
 
 // Export router

@@ -17,6 +17,7 @@ const cookieParser = require('cookie-parser')
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/userRoutes')
 const productRoutes = require('./routes/productRoutes')
+const reviewRoutes = require('./routes/reviewRoutes')
 // ===== IMPORT MIDDLEWARES ====== //
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -49,10 +50,12 @@ app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
 
+
 // ===== ROUTES ====== //
 app.use('/api/v1/express-ecommerce-api/auth', authRoutes)
 app.use('/api/v1/express-ecommerce-api/users', userRoutes)
 app.use('/api/v1/express-ecommerce-api/products', productRoutes)
+app.use('/api/v1/express-ecommerce-api/reviews', reviewRoutes)
 
 
 // ===== OTHER MIDDLEWARES ====== //

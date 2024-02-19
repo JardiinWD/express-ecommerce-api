@@ -127,20 +127,10 @@ const deleteProduct = catchAsync(async (req, res) => {
 })
 
 
-/** Controller function for upload image for single product
- * @param {Object} req - Express request object. Contains information about the client's request.
- * @param {Object} res - Express response object. Used to send a response to the client.
- */
-const uploadImage = catchAsync(async (req, res) => {
-    res.send('uploadImage')
-})
-
-
 module.exports = {
     createProduct,
     getAllProducts,
     getSingleProduct,
     updateProduct,
-    deleteProduct,
-    uploadImage
+    deleteProduct
 }
