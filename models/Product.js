@@ -66,8 +66,33 @@ const ProductSchema = new mongoose.Schema({
         required: true,
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    // This is where we set virtuals to true (In order to create the same populate logic but without storing on db)
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    }
 })
+
+
+// Create Virtual for reviews WITHOUT ReviewSchema
+ProductSchema.virtual('reviews', {
+    ref: 'Review', // Reference to the 'Review' model
+    localField: '_id', // Field in the current model
+    foreignField: 'product', // Field in the referenced model
+    justOne: false, // Allow multiple reviews for a product
+})
+
+// Middleware to delete associated reviews when a product is removed
+ProductSchema.pre('remove', async function (next) {
+    // Find and delete all reviews associated with the product
+    await this.model('Review').deleteMany({
+        product: this._id
+    })
+})
+
 
 
 // Creating a model named 'User' based on the defined schema

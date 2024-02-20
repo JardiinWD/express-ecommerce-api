@@ -10,8 +10,14 @@ const {
     updateProduct,
     deleteProduct,
 } = require('./../controllers/productController')
+// Importing the reviewController controllers
+const {
+    getSingleProductReviews
+} = require('./../controllers/reviewController')
+
+
 // Importing the Authenticazion Middleware for protecting Login
-const { authenticationMiddleware, authorizePermissions } = require('./../middleware/authentication')
+const { authenticationMiddleware, authorizePermissions } = require('./../middleware/authentication');
 
 // Route for GET all products
 router
@@ -26,6 +32,10 @@ router
     .patch([authenticationMiddleware, authorizePermissions('admin')], updateProduct)
     .delete([authenticationMiddleware, authorizePermissions('admin')], deleteProduct)
 
+// GET operation for single product reviews
+router
+    .route('/:id/reviews')
+    .get(getSingleProductReviews)
 
 
 

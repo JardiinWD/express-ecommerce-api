@@ -59,7 +59,7 @@ const getSingleProduct = catchAsync(async (req, res) => {
     // Find the product in the database
     const product = await Product.findOne({
         _id: productId
-    })
+    }).populate('reviews')
     // Check if the product exists
     if (!product)
         throw new NotFoundError(`There's no product with this id: ${productId}`)

@@ -160,11 +160,27 @@ const deleteReview = catchAsync(async (req, res) => {
     })
 })
 
+const getSingleProductReviews = catchAsync(async (req, res) => {
+    // Retrieve the productId from the request.params
+    const { id: productId } = req.params
+    // Find the reviews where the product is the same as productId
+    const reviews = await Review.find({
+        product: productId
+    })
+    // Send a message to Postman
+    res.status(StatusCodes.OK).json({
+        status: 'success',
+        count: reviews.length,
+        reviews
+    })
+})
+
 
 module.exports = {
     createReview,
     getAllReviews,
     getSingleReview,
     updateReview,
-    deleteReview
+    deleteReview,
+    getSingleProductReviews
 }
