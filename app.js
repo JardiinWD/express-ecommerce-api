@@ -12,22 +12,24 @@ const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const cors = require('cors')
 const xss = require('xss')
+const mongoSanitize = require('express-mongo-sanitize')
 const cookieParser = require('cookie-parser')
 // ===== IMPORT ROUTES ====== //
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/userRoutes')
 const productRoutes = require('./routes/productRoutes')
 const reviewRoutes = require('./routes/reviewRoutes')
+const orderRoutes = require('./routes/orderRoutes')
 // ===== IMPORT MIDDLEWARES ====== //
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
+
 // ==== SECURITY AND DATA SANITIZATION ===== //
 
-// Middleware for Set Security HTTP Headers
-app.use(helmet());
+// Setting trust proxy to 1 to trust the first hop
+app.set('trust proxy', 1)
 
-// ===== SECURITY MIDDLEWARES ====== //
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
@@ -38,6 +40,15 @@ const limiter = rateLimit({
 
 // Middleware to Limit access to resources after 100 requests (Preventing DDos attack)
 app.use('/api', limiter);
+
+// Middleware for Set Security HTTP Headers
+app.use(helmet());
+// Middleware for Set Security CORS
+app.use(cors())
+// Middleware for Set Security XSS Protector
+app.use(xss())
+// Middleware for MongoDB Sanitizer
+app.use(mongoSanitize())
 
 
 // ===== FUNCTIONALITY ====== //
@@ -50,17 +61,19 @@ app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
 
-
 // ===== ROUTES ====== //
+
 app.use('/api/v1/express-ecommerce-api/auth', authRoutes)
 app.use('/api/v1/express-ecommerce-api/users', userRoutes)
 app.use('/api/v1/express-ecommerce-api/products', productRoutes)
 app.use('/api/v1/express-ecommerce-api/reviews', reviewRoutes)
+app.use('/api/v1/express-ecommerce-api/orders', orderRoutes)
 
 
 // ===== OTHER MIDDLEWARES ====== //
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
+
 
 // Setting the MongoDB URI
 const mongoDbUri = `mongodb+srv://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PASSWORD}@${process.env.MONGO_DB_CLUSTER}/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`
